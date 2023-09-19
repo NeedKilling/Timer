@@ -1,19 +1,17 @@
 "use strict"
 
-const buttons = document.querySelector(".buttons");
+const title = document.querySelector('.timer_date')
+const input = document.querySelector('.timer_input')
 
 const days = document.getElementById('day');
 const hours = document.getElementById('hour');
 const minets = document.getElementById('minets');
 const seconds = document.getElementById('seconds');
 
-const title = document.querySelector('.timer_date')
-
 const dayText = document.getElementById('dayText');
 const hourText = document.getElementById('hourText');
 const minetText = document.getElementById('minetText');
 const secondText = document.getElementById('secondText');
-
 
 let day;
 let hour;
@@ -38,30 +36,67 @@ function timeToText(number,textArray){
 
 const a = setInterval(timeCounter,1000)
 
-const dedline = new Date(2023,8,5,7)
 
-title.innerHTML = dedline.toString().slice(0,-40)
+let deadline;
+
+////////////////////////////////////////////////////////////////////////////////////////
+
+
+function dateInInput(callback){
+    input.addEventListener('keydown',function(e){ 
+        if(e.code == "Enter"){
+            callback(input.value);
+        }
+        
+    })
+}
+// dateInInput(function(string){
+//     string = string.split('.');
+//     console.log(string);
+// });
+
+dateInInput(callback);
+    function callback(string){
+        
+        string = string.split('.');
+        console.log(string);
+
+        deadline = new Date(string[2],string[1]-1,string[0])
+        title.innerHTML = dedline.toString().slice(0,-40);
+        console.log(dedline)
+
+        if(title.innerHTML){
+            title.style.visibility = "visible";
+        }
+        
+    };
+
+    if(title.innerHTML.length == 0){
+        title.style.visibility = "hidden";
+    }
+/////////////////////////////////////////////////////////////////////////////
+
 
 
 function timeCounter(){     
-    let timeNow = new Date().getTime()
+    let timeNow = new Date()
     
-    let currentTime = dedline.getTime() - timeNow;
+    let currentTime = dedline - timeNow;
 
     let date = Math.floor(currentTime / 1000);
-
-    day = Math.floor(date / 60 / 60 / 24)
+     
+    day = Math.floor(date / 60 / 60 / 24)  
     hour = Math.floor(date / 60 / 60) % 24
     minet = Math.floor(date / 60) % 60;
     second = date % 60
     
     if(currentTime < 0){
         days.innerHTML = "00"
-        hour.innerHTML = "00"
+        hours.innerHTML = "00"
         minets.innerHTML = "00"
         seconds.innerHTML = "00"
         clearInterval(a)
-    }else{
+    }else if(currentTime){      
         days.innerHTML = day < 10 ? "0" + day : day
         hours.innerHTML = hour < 10 ? "0" + hour : hour
         minets.innerHTML = minet < 10 ? "0" + minet : minet
