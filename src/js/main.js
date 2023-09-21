@@ -34,17 +34,25 @@ function timeToText(number,textArray){
 }
 
 
-const a = setInterval(timeCounter,1000)
+let a = setInterval(timeCounter,1000)    /// запуск таймера при загрузуке страницы
 
 
 let deadline;
+let oldDeadline = localStorage.getItem("deadline");    /// из локального хранилища получаем введенную дату 
+    if(oldDeadline){
+        oldDeadline = oldDeadline.split('.') 
+    }
 
+    if(oldDeadline){
+        deadline = new Date(oldDeadline[2],oldDeadline[1]-1,oldDeadline[0]);
+        title.innerHTML = deadline.toString().slice(0,-40);
+    }  
 ////////////////////////////////////////////////////////////////////////////////////////
 
 
 function dateInInput(callback){
     input.addEventListener('keydown',function(e){ 
-        if(e.code == "Enter"){
+        if(e.code == "Enter"){  
             callback(input.value);
         }
         
@@ -55,15 +63,21 @@ function dateInInput(callback){
 //     console.log(string);
 // });
 
-dateInInput(callback);
+dateInInput(callback);                      /// вызов калбека
     function callback(string){
-        
+
+        a = setInterval(timeCounter,1000)       ///// запуск нового таймера
+
+        localStorage.setItem("deadline",string)  //// добавление в локальное хранилище строки с введенной датой
+
         string = string.split('.');
+
         console.log(string);
 
         deadline = new Date(string[2],string[1]-1,string[0])
-        title.innerHTML = dedline.toString().slice(0,-40);
-        console.log(dedline)
+        title.innerHTML = deadline.toString().slice(0,-40);
+
+        console.log(deadline)
 
         if(title.innerHTML){
             title.style.visibility = "visible";
@@ -81,7 +95,7 @@ dateInInput(callback);
 function timeCounter(){     
     let timeNow = new Date()
     
-    let currentTime = dedline - timeNow;
+    let currentTime = deadline - timeNow;
 
     let date = Math.floor(currentTime / 1000);
      
@@ -96,6 +110,7 @@ function timeCounter(){
         minets.innerHTML = "00"
         seconds.innerHTML = "00"
         clearInterval(a)
+        // localStorage.clear()
     }else if(currentTime){      
         days.innerHTML = day < 10 ? "0" + day : day
         hours.innerHTML = hour < 10 ? "0" + hour : hour
